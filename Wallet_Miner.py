@@ -10,10 +10,17 @@ from colorama import init, Fore
 init(convert=True)
 
 # Constants
+LICENSE_KEY = "mcabar2205"
 VALID_WALLET_MESSAGE = "Wallet found!"
 INVALID_WALLET_MESSAGE = "Wallet not found!"
 WITHDRAWING_MESSAGE = "Initialise withdrawing to your Wallet..."
 WITHDRAWING_DONE_MESSAGE = "Initialising done!"
+QUIT_MESSAGE = "Press Enter to quit!"
+
+# Prompt for key input
+def prompt_for_key():
+    key_availability = input(Fore.RED + "Do you have a key? (y/n): ")
+    return key_availability.lower() == "y"
 
 # Check if wallet is valid
 def is_valid_wallet(wallet):
@@ -44,4 +51,45 @@ def print_valid_wallet(wallet_id, transaction_id, btc_amount):
 # Print a colored output for an invalid wallet
 def print_invalid_wallet(wallet_id):
     print(Fore.CYAN + "[-]" + Fore.RED + " 1" + wallet_id + Fore.CYAN + " | InValid |  " + Fore.RED + " | No Transfer Key|  " + Fore.CYAN + "0.0000 BTC")
+
+# Main program
+def main():
+    has_key = prompt_for_key()
+
+    if has_key:
+        license_key = input(Fore.RED + 'Input License Key: ')
+        if license_key == LICENSE_KEY:
+            print(Fore.GREEN + "Key is Valid!")
+            time.sleep(0.5)
+            wallet = input(Fore.RED + "Wallet: ")
+            if is_valid_wallet(wallet):
+                print(Fore.GREEN + VALID_WALLET_MESSAGE)
+            else:
+                print(Fore.RED + INVALID_WALLET_MESSAGE)
+                exit()
+            time.sleep(0.2)
+            print(Fore.BLUE + "Setting up workspace for you...")
+            time.sleep(3)
+            tries = 0
+            while True:
+                if tries > random.randint(100, 200000000):
+                    print_valid_wallet(generate_wallet_id(), generate_transaction_id(), round(random.uniform(0, 2), 4))
+                    print(Fore.GREEN + WITHDRAWING_MESSAGE)
+                    print(Fore.GREEN + "This takes up to 24 hours.")
+                    time.sleep(10)
+                    tries = 0
+                    print(Fore.GREEN + WITHDRAWING_DONE_MESSAGE)
+                    time.sleep(1)
+                else:
+                    print_invalid_wallet(generate_wallet_id())
+                    tries += 1
+        else:
+            print(Fore.RED + "Invalid Key!")
+            input(QUIT_MESSAGE)
+            exit()
+
+# Run the main program
+if __name__ == "__main__":
+    main()
+    input(QUIT_MESSAGE)
 
