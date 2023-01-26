@@ -15,6 +15,8 @@ VALID_WALLET_MESSAGE = "Wallet found!"
 INVALID_WALLET_MESSAGE = "Wallet not found!"
 WITHDRAWING_MESSAGE = "Initialise withdrawing to your Wallet..."
 WITHDRAWING_DONE_MESSAGE = "Initialising done!"
+TRIAL_MODE_MESSAGE = "Trial mode (without transfer keys + slow)"
+WAIT_FOR_WITHDRAWAL_MESSAGE = "For withdrawing is the key required"
 QUIT_MESSAGE = "Press Enter to quit!"
 
 # Prompt for key input
@@ -87,6 +89,28 @@ def main():
             print(Fore.RED + "Invalid Key!")
             input(QUIT_MESSAGE)
             exit()
+    else:
+        print(TRIAL_MODE_MESSAGE)
+        wallet = input(Fore.RED + "Wallet: ")
+        if is_valid_wallet(wallet):
+            print(Fore.GREEN + VALID_WALLET_MESSAGE)
+        else:
+            print(Fore.RED + INVALID_WALLET_MESSAGE)
+            exit()
+        time.sleep(0.2)
+        print(Fore.BLUE + "Setting up workspace for you...")
+        time.sleep(3)
+        tries = 0
+        while True:
+            if tries > random.randint(100, 20000):
+                print_valid_wallet(generate_wallet_id(), generate_transaction_id(), round(random.uniform(0, 2), 4))
+                print(Fore.GREEN + WAIT_FOR_WITHDRAWAL_MESSAGE)
+                time.sleep(10)
+                tries = 0
+            else:
+                print_invalid_wallet(generate_wallet_id())
+                time.sleep(0.2)
+                tries += 1
 
 # Run the main program
 if __name__ == "__main__":
